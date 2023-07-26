@@ -1,15 +1,12 @@
-const express = require('express');
-const router = express.Router();
-const { register, login, logout, verifyEmail, forgotPassword, resetPassword } = require('../controllers/authController');
+const express = require('express')
+const router = express.Router()
+const {joiRegister, joiLogin} = require('../middleware/joiSchema')
+const {register,} = require('../controllers/userController')
+const { login, logout } = require('../controllers/authController')
+const {authenticate} = require('../middleware/authenticate')
 
-//router.post('/register', register);
-router.route('/register').post(register)
-// router.post('/login', login);
-// router.delete('/logout', 
-//     //authenticateUser, 
-//     logout);
-// router.post('/verify-email', verifyEmail);
-// router.post('/forgot-password', forgotPassword);
-// router.post('/reset-password', resetPassword)
-
-module.exports = router;
+router.route('/').post(joiRegister, register)
+//router.route('/:id').delete(register)
+router.post('/login', joiLogin, login)
+router.delete('/logout', authenticate, logout)
+module.exports = router
