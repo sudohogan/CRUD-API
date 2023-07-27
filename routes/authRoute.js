@@ -6,7 +6,8 @@ const { login, logout } = require('../controllers/authController')
 const {verifyToken} = require('../middleware/verifyToken')
 
 router.route('/').post(joiRegister, register)
-            .patch(verifyToken, joiUpdate, updateUser).get(verifyToken, getUser).delete(verifyToken, deleteUser)
+            .patch(verifyToken, joiUpdate, updateUser)
+            .get(verifyToken, getUser).delete(verifyToken, deleteUser)
 router.post('/login', joiLogin, login)
 router.delete('/logout', verifyToken, logout)
 module.exports = router
