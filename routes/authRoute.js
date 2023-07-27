@@ -1,12 +1,12 @@
 const express = require('express')
 const router = express.Router()
-const {joiRegister, joiLogin} = require('../middleware/joiSchema')
-const {register,} = require('../controllers/userController')
+const {joiRegister, joiLogin, joiUpdate} = require('../middleware/joiSchema')
+const {register, deleteUser,updateUser, getUser } = require('../controllers/userController')
 const { login, logout } = require('../controllers/authController')
-const {authenticate} = require('../middleware/authenticate')
+const {verifyToken} = require('../middleware/verifyToken')
 
 router.route('/').post(joiRegister, register)
-//router.route('/:id').delete(register)
+            .patch(verifyToken, joiUpdate, updateUser).get(verifyToken, getUser).delete(verifyToken, deleteUser)
 router.post('/login', joiLogin, login)
-router.delete('/logout', authenticate, logout)
+router.delete('/logout', verifyToken, logout)
 module.exports = router
