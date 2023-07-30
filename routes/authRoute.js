@@ -5,6 +5,7 @@ const {register, deleteUser,updateUser, getUser } = require('../controllers/user
 const { login, logout } = require('../controllers/authController')
 const {verifyToken} = require('../middleware/verifyToken')
 
+
 router.route('/').post(joiRegister, register)
             .patch(verifyToken, joiUpdate, updateUser)
             .get(verifyToken, getUser).delete(verifyToken, deleteUser)

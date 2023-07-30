@@ -1,6 +1,8 @@
 const jwt = require("jsonwebtoken");
 
 const config = process.env;
+const blacklistedTokens = [];
+
 
 const verifyToken = (req, res, next) => {
   const token =
@@ -11,6 +13,9 @@ const verifyToken = (req, res, next) => {
   }
   try {
     const decoded = jwt.verify(token, config.JWT_SECRET);
+    if (blacklistedTokens.includes(token)) {
+      return res.status(401).json({msg:"Token has been invalidated"});
+    }
     req.user = decoded;
   } catch (err) {
     return res.status(401).send("Invalid Token");
@@ -18,4 +23,4 @@ const verifyToken = (req, res, next) => {
   return next();
 };
 
-module.exports = {verifyToken};
+module.exports = {verifyToken, blacklistedTokens};
