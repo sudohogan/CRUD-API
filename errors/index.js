@@ -1,14 +1,14 @@
-const CustomAPIError = require('./custom-api')
-const UnauthenticatedError = require('./unauthenticated')
-const NotFoundError = require('./not-found')
-const BadRequestError = require('./bad-request')
-const UnauthorizedError = require('./unauthorized')
-const InternalServer = require('./internalServer')
+const CustomAPIError = require('./custom-api');
+const UnauthenticatedError = require('./unauthenticated');
+const NotFoundError = require('./not-found');
+const BadRequestError = require('./bad-request');
+const UnauthorizedError = require('./unauthorized');
+const InternalServer = require('./internalServer');
 module.exports = {
-    CustomAPIError,
-    UnauthenticatedError,
-    NotFoundError,
-    BadRequestError,
-    UnauthorizedError,
-    InternalServer
-}
+  CustomAPIError,
+  UnauthenticatedError,
+  NotFoundError,
+  BadRequestError,
+  UnauthorizedError,
+  InternalServer,
+};

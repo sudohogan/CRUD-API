@@ -1,26 +1,24 @@
-const jwt = require("jsonwebtoken");
+const jwt = require('jsonwebtoken');
 
 const config = process.env;
 const blacklistedTokens = [];
 
-
 const verifyToken = (req, res, next) => {
-  const token =
-    req.body.token || req.query.token || req.headers["token"];
+  const token = req.body.token || req.query.token || req.headers['token'];
 
   if (!token) {
-    return res.status(403).send("A token is required for authentication");
+    return res.status(403).send('A token is required for authentication');
   }
   try {
     const decoded = jwt.verify(token, config.JWT_SECRET);
     if (blacklistedTokens.includes(token)) {
-      return res.status(401).json({msg:"Token has been invalidated"});
+      return res.status(401).json({ msg: 'Token has been invalidated' });
     }
     req.user = decoded;
   } catch (err) {
-    return res.status(401).send("Invalid Token");
+    return res.status(401).send('Invalid Token');
   }
   return next();
 };
 
-module.exports = {verifyToken, blacklistedTokens};
+module.exports = { verifyToken, blacklistedTokens };
