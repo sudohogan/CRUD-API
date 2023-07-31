@@ -7,9 +7,9 @@ Installation:
 - Run 'npm install' to get the neecessary dependencies,
 - Start the program using 'nodemon app.js'.
 - Add a '.env' file in the parent directory of the project, this file willcontain 3 string variables .
-  1: your 'MONGO_URL' which will be the url to your mongo db table.
-  2: your 'JWT_SECRET' this is the secret character used to create json web token.
-  3: finally your 'JWT_LIFETIME' this is the duration you want your tokens to last.
+  - 1: your 'MONGO_URL' which will be the url to your mongo db table.
+  - 2: your 'JWT_SECRET' this is the secret character used to create json web token.
+  - 3: finally your 'JWT_LIFETIME' this is the duration you want your tokens to last.
 
 Usage:
 
