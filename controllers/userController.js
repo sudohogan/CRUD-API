@@ -1,17 +1,20 @@
 const User = require('../model/user')
 const CustomError = require('../errors')
-const {generateToken} = require('./authController')
-const jwt = require('jsonwebtoken');
 
 const register = async (req, res) => {
     const { email, firstName, password, passwordConfirm, lastName, 
         carType, zipCode, city, country } = req.body
     const emailExists = await User.findOne({email})
     if (emailExists) {
-        throw new CustomError.BadRequestError('email already exists')
+        throw new CustomError.BadRequestError({"statusCode": "Validation error",
+        "errors": [
+          {
+            "resource": "Email",
+            "message": "Invalid email"
+          }
+        ]})
     }
     const user = await User.create({ ...req.body})
-    const token = await generateToken(user)
     res.status(201).json({user: {_id: user._id, firstName, 
         lastName, email, carType, zipCode, city, country}})
 }
@@ -19,7 +22,9 @@ const register = async (req, res) => {
 const updateUser = async (req, res) => {
     const auths = req.header('Authorization')
     if (!auths) {
-       throw new CustomError.UnauthorizedError('THereis no auth')
+       throw new CustomError.UnauthorizedError({"statusCode": 401,
+       "message": "Not Authenticated",
+       "error": "Unauthorized"})
     }
     token = auths.substring(7, auths.length)
     const { firstName, lastName, email, password, passwordConfirm, 
@@ -38,12 +43,16 @@ const updateUser = async (req, res) => {
 const getUser = async (req, res) =>  {
     const auths = req.header('Authorization')
     if (!auths) {
-       throw new CustomError.UnauthorizedError('THereis no auth')
+       throw new CustomError.UnauthorizedError({  "statusCode": 401,
+       "message": "Not Authenticated",
+       "error": "Unauthorized"})
     }
     token = auths.substring(7, auths.length)
     const user = await User.findOne(auths._id)
     if (!user) {
-        throw new CustomError.NotFoundError(`No user with id: ${req.user._id}`)
+        throw new CustomError.NotFoundError({  "statusCode": 404,
+        "message": "user not found",
+        "error": "Not Found"})
     }
     res.status(200).json({user: {_id: user._id, firstName: user.firstName, 
         lastName: user.lastName, email: user.email, carType: user.carType,
@@ -53,15 +62,20 @@ const getUser = async (req, res) =>  {
 const deleteUser = async (req, res) =>  {
     const auths = req.header('Authorization')
     if (!auths) {
-       throw new CustomError.UnauthorizedError('THereis no auth')
+       throw new CustomError.UnauthorizedError({    
+       "statusCode": 401,
+       "message": "Not Authenticated",
+       "error": "Unauthorized"})
     }
     token = auths.substring(7, auths.length)
     const user = await User.findOne({user: req.user});
     if (!user) {
-        throw new CustomError.NotFoundError(`No user with id: ${req.user._id}`)
+        throw new CustomError.NotFoundError({  "statusCode": 404,
+        "message": "user not found",
+        "error": "Not Found"})
     }
     await user.delete()
-    res.status(200).json({msg: 'account deleted'})
+    res.status(204).json({msg: 'account deleted'})
 }
 
 module.exports = { register, updateUser, getUser, deleteUser }

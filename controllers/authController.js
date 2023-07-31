@@ -8,12 +8,20 @@ const login = async (req, res) => {
     const {email, password} = req.body
 
     if (!email || !password) {
-        throw new CustomError.BadRequestError('Please provide valid email and password')
+        throw new CustomError.BadRequestError({  
+            "statusCode": "Validation error",
+            "errors": [
+            {
+             "resource": "Email",
+             "message": "Invalid email"
+            }
+        ]})
     }
     const user = await User.findOne({email})
-
     if (!user) {
-        throw new CustomError.UnauthenticatedError('Email or password is invalid')
+        throw new CustomError.UnauthorizedError({  "statusCode": 404,
+        "message": "user not found",
+        "error": "Not Found"})
     }
     const isPass = await user.comparePassword(password)
     if (!isPass) {
@@ -35,9 +43,14 @@ const generateToken = async (user) => {
 
 const logout = async (req, res) => {
     const token = req.body.token || req.query.token || req.headers["token"];
-
+    if (!token) {
+        throw new CustomError.UnauthorizedError({    
+        "statusCode": 401,
+        "message": "Not Authenticated",
+        "error": "Unauthorized"})
+     }
     await blacklistedTokens.push(token);
-    res.json({ message: "Logout successful." });
+    res.status(204).json({ message: "Logout successful." });
 }
 
 
