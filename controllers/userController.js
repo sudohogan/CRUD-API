@@ -22,11 +22,16 @@ const updateUser = async (req, res) => {
        throw new CustomError.UnauthorizedError('THereis no auth')
     }
     token = auths.substring(7, auths.length)
-    const { firstName} = req.body
+    const { firstName, lastName, email, password, passwordConfirm, 
+            carType, zipCode, city, country} = req.body
     if (!firstName) {
         throw new CustomError.BadRequestError('Please provide credentials')
     }
     const user = await User.findOne(auths._id)
+    user.firstName = firstName, user.lastName = lastName, user.email =  email, user.password = password,
+        user.passwordConfirm = passwordConfirm, user.carType = carType, 
+        user.zipCode = zipCode, user.city = city, user. country = country;  
+    await user.save();
     res.status(200).json({user})
 }
 
@@ -46,11 +51,16 @@ const getUser = async (req, res) =>  {
 }
 
 const deleteUser = async (req, res) =>  {
-
-    const user = await User.findByIdAndDelete({user: req.user});
+    const auths = req.header('Authorization')
+    if (!auths) {
+       throw new CustomError.UnauthorizedError('THereis no auth')
+    }
+    token = auths.substring(7, auths.length)
+    const user = await User.findOne({user: req.user});
     if (!user) {
         throw new CustomError.NotFoundError(`No user with id: ${req.user._id}`)
     }
+    await user.delete()
     res.status(200).json({msg: 'account deleted'})
 }
 
