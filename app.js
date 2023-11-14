@@ -1,15 +1,31 @@
 require('dotenv').config();
 require('express-async-errors');
 const express = require('express');
+const helmet = require('helmet');
+const cors = require('cors');
+const bodyParser = require('body-parser');
+const mongoSanitize = require('express-mongo-sanitize');
+
 const app = express();
 
 const connectDB = require('./db/connect');
-const authRouter = require('./routes/authRoute');
+const userRouter = require('./routes/userRoute');
+const adminRoute = require('./routes/adminRoute');
+const payPalRouter = require('./routes/payPalRoute');
+const verifyEmailRoute = require('./routes/verifyEmailRoute');
 
+app.use(helmet());
+app.use(cors());
+app.use(mongoSanitize());
 app.use(express.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
-app.use('/api/v1/account', authRouter);
-app.use('/api/v1/auth', authRouter);
+
+app.use('/api/v1/admin', adminRoute);
+app.use('/api/v1/user', userRouter, adminRoute);
+app.use('/api/v1/subscription', payPalRouter);
+app.use('/api/v1/verify', verifyEmailRoute);
 
 const port = process.env.PORT || 3000;
 const start = async () => {
@@ -24,3 +40,5 @@ const start = async () => {
 };
 
 start();
+
+app.get('/', (req, res) => res.sendFile(__dirname + "/index.html"));

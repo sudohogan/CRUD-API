@@ -1,33 +1,31 @@
 const User = require('../model/user');
-const CustomError = require('../errors');
 const jwt = require('jsonwebtoken');
 const { blacklistedTokens } = require('../middleware/verifyToken');
+const {throwValidationError, throwUnauthorizedError, 
+  throwNotFoundError, ValidationError } = require('../errors/newError')
 
 const login = async (req, res) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
-    throw new CustomError.BadRequestError({
-      statusCode: 'Validation error',
-      errors: [
-        {
-          resource: 'Email',
-          message: 'Invalid email',
-        },
-      ],
-    });
+    throw new throwValidationError(
+      'Invalid credentials.'
+    )
   }
   const user = await User.findOne({ email });
   if (!user) {
-    throw new CustomError.UnauthorizedError({
-      statusCode: 404,
-      message: 'user not found',
-      error: 'Not Found',
-    });
+    throw new throwNotFoundError(
+      'User not found.'
+    )
+  }
+  if (user.isActive == false) {
+    throw new throwValidationError(
+        "User's email has not been authenticated"
+    );
   }
   const isPass = await user.comparePassword(password);
-  if (!isPass) {
-    throw new CustomError.UnauthenticatedError('Email or password is invalid');
+  if (isPass == true) {
+    throw new ValidationError('Password is incorrect.');
   }
   const token = await generateToken(user);
 
@@ -36,30 +34,25 @@ const login = async (req, res) => {
     .set('Authorization', `Bearer ${token.token}`)
     .json({
       token,
-      user: {
         _id: user._id,
-        firstName: user.firstName,
-        lastName: user.lastName,
-      },
+        fullName: user.fullName,
     });
 };
 
 const generateToken = async (user) => {
   const { _id, email } = user;
   const jwtSecret = process.env.JWT_SECRET;
-  return await jwt.sign({ _id, email }, jwtSecret, { expiresIn: '1h' });
+  return jwt.sign({ _id, email }, jwtSecret, { expiresIn: '1h' });
 };
 
 const logout = async (req, res) => {
   const token = req.body.token || req.query.token || req.headers['token'];
   if (!token) {
-    throw new CustomError.UnauthorizedError({
-      statusCode: 401,
-      message: 'Not Authenticated',
-      error: 'Unauthorized',
-    });
+    throw new throwUnauthorizedError(
+     'User is not authorized for this route'
+    );
   }
-  await blacklistedTokens.push(token);
+  blacklistedTokens.push(token);
   res.status(204).json({ message: 'Logout successful.' });
 };
 

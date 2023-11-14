@@ -1,13 +1,11 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
+const Admin = require('./admin')
 
 const UserSchema = new mongoose.Schema({
-  firstName: {
+  fullName: {
     type: String,
-  },
-  lastName: {
-    type: String,
-    required: true,
+    required: true
   },
   email: {
     type: String,
@@ -18,27 +16,25 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  passwordConfirm: {
+  package: {
     type: String,
     required: true,
+    enum: [
+      'monthly',
+      'quarterly',
+      'biannually'
+    ]
   },
-  country: {
-    type: String,
+  isActive: {
+    type: Boolean,
+    default: false,
+    required: true
+  },
+  adminId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Admin',
     required: true,
-  },
-  carType: {
-    type: String,
-    required: [true, 'Please choose a category'],
-    enum: ['SEDAN', 'SUV', 'SEMI_LUXURY', 'LUXURY'],
-  },
-  city: {
-    type: String,
-    required: true,
-  },
-  zipCode: {
-    type: String,
-    required: true,
-  },
+},
 });
 
 UserSchema.pre('save', async function () {

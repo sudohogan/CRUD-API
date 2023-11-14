@@ -9,10 +9,11 @@ const {
 } = require('../controllers/userController');
 const { login, logout } = require('../controllers/authController');
 const { verifyToken } = require('../middleware/verifyToken');
+const {verifyAdmin} = require('../middleware/verifyAdmin')
 
 router
   .route('/')
-  .post(joiRegister, register)
+  .post(joiRegister, verifyAdmin, register)
   .patch(verifyToken, joiUpdate, updateUser)
   .get(verifyToken, getUser)
   .delete(verifyToken, deleteUser);
