@@ -24,6 +24,7 @@ const login = async (req, res) => {
     );
   }
   const isPass = await user.comparePassword(password);
+  console.log(isPass);
   if (isPass == true) {
     throw new ValidationError('Password is incorrect.');
   }

@@ -19,7 +19,7 @@ const adminLogin = async (req, res) => {
     )
   }
   const isPasswordTrue = await admin.comparePassword(password);
-  if (isPasswordTrue) {
+  if (isPasswordTrue == true) {
     throw new throwBadRequestError('Password is incorrect');
   }
   const token = await generateToken(admin);
