@@ -21,13 +21,16 @@ app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+const baseURL = process.env.NODE_ENV === 'production'
+  ? 'https://kerry-three.vercel.app'
+  : `http://localhost:${process.env.PORT || 3000}`;
 
-app.use('/api/v1/admin', adminRoute);
-app.use('/api/v1/user', userRouter, adminRoute);
-app.use('/api/v1/subscription', payPalRouter);
-app.use('/api/v1/verify', verifyEmailRoute);
+app.use(`${baseURL}/api/v1/admin`, adminRoute);
+app.use(`${baseURL}/api/v1/user', userRouter`, userRouter, adminRoute);
+app.use(`${baseURL}/api/v1/subscription`, payPalRouter);
+app.use(`${baseURL}/api/v1/verify`, verifyEmailRoute);
 
-const port = process.env.PORT || 3000;
+const port = process.env.NODE_ENV || 3000;
 const start = async () => {
   try {
     await connectDB(process.env.MONGO_URL);
