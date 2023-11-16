@@ -26,7 +26,7 @@ const baseURL = process.env.NODE_ENV === 'production'
   : `http://localhost:${process.env.PORT || 3000}`;
 
 app.use(`${baseURL}/api/v1/admin`, adminRoute);
-app.use(`${baseURL}/api/v1/user', userRouter`, userRouter, adminRoute);
+app.use(`${baseURL}/api/v1/user`, userRouter, adminRoute);
 app.use(`${baseURL}/api/v1/subscription`, payPalRouter);
 app.use(`${baseURL}/api/v1/verify`, verifyEmailRoute);
 
