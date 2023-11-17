@@ -23,7 +23,7 @@ const adminLogin = async (req, res) => {
     throw new throwBadRequestError('Password is incorrect');
   }
   const token = await generateToken(admin);
-
+  console.log(token);
   res
     .status(200)
     .set('Authorization', `Bearer ${token.token}`)
