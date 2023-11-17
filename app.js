@@ -13,6 +13,7 @@ const userRouter = require('./routes/userRoute');
 const adminRoute = require('./routes/adminRoute');
 const payPalRouter = require('./routes/payPalRoute');
 const verifyEmailRoute = require('./routes/verifyEmailRoute');
+const allowCors = require('./utils/allowCors')
 
 app.use(helmet());
 app.use(cors());
@@ -26,6 +27,7 @@ app.use('/api/v1/admin', adminRoute);
 app.use('/api/v1/user', userRouter, adminRoute);
 app.use('/api/v1/subscription', payPalRouter);
 app.use('/api/v1/verify', verifyEmailRoute);
+app.use('/', allowCors)
 
 const port = process.env.NODE_ENV || 3000;
 const start = async () => {
