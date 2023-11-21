@@ -29,7 +29,7 @@ app.use('/api/v1/subscription', payPalRouter);
 app.use('/api/v1/verify', verifyEmailRoute);
 app.use('/', allowCors)
 
-const port = process.env.NODE_ENV || 3000;
+const port = process.env.NODE_ENV || 3001;
 const start = async () => {
   try {
     await connectDB(process.env.MONGO_URL);
